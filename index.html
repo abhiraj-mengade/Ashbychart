@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    svg {
+        /* background-color: #cccccc; */
+        /* border: 2px solid #777777; */
+        margin: 20px;
+    }
+</style>
+
+
+<script src="http://d3js.org/d3.v4.js"></script>
+
+<svg id="demo" width='900' height='900'></svg>
+
+<script>
+
+
+
+var svg = d3.select('svg#demo');
+
+
+var width = svg.attr('width');
+var height = svg.attr('height');
+  var scale = d3.scaleLinear()
+                .domain( [0, 100] )
+                .range( [0, width] );
+
+  // Axis
+  var axisy = d3.axisTop()
+               .scale(scale);
+
+    var axisx = d3.axisLeft()
+               .scale(scale);
+    
+
+  svg.append("g")
+     .call(axisy);
+    svg.append("g")
+        .call(axisx);
+
+  // Gridline
+  var gridlines = d3.axisTop()
+                    .tickFormat("")
+                    .tickSize(-height)
+                    .scale(scale);
+ var gridlinesx = d3.axisLeft()
+                    .tickFormat("")
+                    .tickSize(-width)
+                    .scale(scale);
+  svg.append("g")
+     .attr("class", "grid")
+     .call(gridlines);
+    svg.append("g")
+        .attr("class", "grid")
+        .call(gridlinesx);
+
+svg.attr("cx", function (d) { return scale(d); })
+     .attr("cy", 100)
+
+var pointRadius = 1;
+var hullPadding = 60;
+
+
+// Point/Vector Operations
+
+var vecFrom = function (p0, p1) {               // Vector from p0 to p1
+    return [ p1[0] - p0[0], p1[1] - p0[1] ];
+}
+
+var vecScale = function (v, scale) {            // Vector v scaled by 'scale'
+    return [ scale * v[0], scale * v[1] ];
+}
+
+var vecSum = function (pv1, pv2) {              // The sum of two points/vectors
+    return [ pv1[0] + pv2[0], pv1[1] + pv2[1] ];
+}
+
+var vecUnit = function (v) {                    // Vector with direction of v and length 1
+    var norm = Math.sqrt (v[0]*v[0] + v[1]*v[1]);
+    return vecScale (v, 1/norm);
+}
+
+var vecScaleTo = function (v, length) {         // Vector with direction of v with specified length
+    return vecScale (vecUnit(v), length);
+}
+
+var unitNormal = function (pv0, p1) {           // Unit normal to vector pv0, or line segment from p0 to p1
+    if (p1 != null) pv0 = vecFrom (pv0, p1);
+    var normalVec = [ -pv0[1], pv0[0] ];
+    return vecUnit (normalVec);
+};
+
+
+// Hull Generators
+
+var lineFn = d3.line()
+    .curve (d3.curveCatmullRomClosed)
+    .x (function(d) { return d.p[0]; })
+    .y (function(d) { return d.p[1]; });
+
+
+var smoothHull = function (polyPoints) {
+    // Returns the SVG path data string representing the polygon, expanded and smoothed.
+
+    var pointCount = polyPoints.length;
+
+    // Handle special cases
+    if (!polyPoints || pointCount < 1) return "";
+    if (pointCount === 1) return smoothHull1 (polyPoints);
+    if (pointCount === 2) return smoothHull2 (polyPoints);
+
+    var hullPoints = polyPoints.map (function (point, index) {
+        var pNext = polyPoints [(index + 1) % pointCount];
+        return {
+            p: point,
+            v: vecUnit (vecFrom (point, pNext))
+        };
+    });
+
+    // Compute the expanded hull points, and the nearest prior control point for each.
+    for (var i = 0;  i < hullPoints.length;  ++i) {
+        var priorIndex = (i > 0) ? (i-1) : (pointCount - 1);
+        var extensionVec = vecUnit (vecSum (hullPoints[priorIndex].v, vecScale (hullPoints[i].v, -1)));
+        hullPoints[i].p = vecSum (hullPoints[i].p, vecScale (extensionVec, hullPadding));
+    }
+
+    return lineFn (hullPoints);
+}
+
+
+//adding grid to svg 
+
+
+
+
+// Initial Graphics Setup
+// var convexHullPath = svg.append('path')
+//     .attr ('fill', '#aca')
+//     .attr ('stroke', '#888')
+//     .attr ('stroke-width', '6px');
+var n = 5;
+colors=['#ff0000','#00ff00','#0000ff','#ffff00','#00ffff','#ff00ff','#ffffff','#000000'];
+function render (points,op) {
+    var convexHullPath = svg.append('path')
+    .attr ('fill', colors[op])
+    .attr('opacity', op/n)
+    // .attr ('stroke', '#888')
+    .attr ('stroke-width', '3px');
+    points = points.map(d => [d.x, d.y]);
+    var convexHull = (points.length < 3) ? points : d3.polygonHull(points);
+    convexHullPath.attr ('d', smoothHull(convexHull));
+}
+
+// Random point generators
+var margin = hullPadding + pointRadius+180;
+var pointGenX = d3.randomUniform (margin, width  - margin);
+var pointGenY = d3.randomUniform (margin, height - margin);
+// var pointGen = function (id) { return [pointGenX(), pointGenY(), id]; };
+
+// Create a fixed number of points to work with
+var points = d3.range(30).map(function(d) {
+    return {
+        x: pointGenX(),
+        y: pointGenY(),
+        id: d,
+        r: pointRadius
+    }
+});
+
+
+for (var i = 0; i < n; i++) {
+    var point = d3.range(30).map(function(d) {
+        return {
+            x: pointGenX(),
+            y: pointGenY(),
+            id: d,
+            r: pointRadius
+        }
+    });
+    render(point,i);
+}
+
+// var attractForce = d3.forceManyBody().strength(10).distanceMax(200).distanceMin(30);
+// var repelForce = d3.forceManyBody().strength(-50).distanceMax(50).distanceMin(10);
+// var force = d3.forceSimulation(points)
+//             //   .force("center", d3.forceCenter(width / 2, height / 2))
+//             //   .force("attractForce",attractForce)
+//             //   .force("repelForce",repelForce)
+//             //   .velocityDecay(0.05)
+//             // .force("x", d3.forceX().strength(0.002))
+//             // .force("y", d3.forceY().strength(0.002))
+//             // .force("collide", d3.forceCollide().radius(function(d) { return d.r + 1; }).iterations(2))
+
+//              .on("tick", tick);
+
+// function tick(e) {
+//     var circles = svg.selectAll('circle')
+//                      .data(points, function pointId(d) { return d.id; });
+
+//     circles.enter()
+//            .append ('circle')
+//            .attr ('fill', '#a8d')
+//            .attr ('stroke', 'black')
+//            .attr ('stroke-width', '2px')
+//            .attr ('r', pointRadius);
+
+//     circles.attr ('cx', function(d) { return d.x; })
+//            .attr ('cy', function(d) { return d.y; });
+
+//     circles.exit().remove();
+
+//      render(points);
+// }
+
+
+
+// var pointCount = 30;
+// var pointId = 0;
+// var addPoints = true;
+// var points = d3.range(minPointCount - 1).map(pointGen);
+
+// var updateFunction = function() {
+//     if (addPoints) {
+//         points.push (pointGen(++pointId));
+//         addPoints = (points.length < maxPointCount);
+//     } else {
+//         var i = Number.parseInt (Math.random() * points.length);
+//         points.splice (i, 1);
+//         addPoints = (points.length <= minPointCount);
+//     }
+
+//     render (points);
+//     window.setTimeout (updateFunction, 500);
+// };
+
+// updateFunction();    // Launch the animation
+
+</script>
