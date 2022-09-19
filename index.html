@@ -58,7 +58,7 @@ var height = svg.attr('height');
 svg.attr("cx", function (d) { return scale(d); })
      .attr("cy", 100)
 
-var pointRadius = 1;
+var pointRadius = 500;
 var hullPadding = 60;
 
 
@@ -146,7 +146,17 @@ function render (points,op) {
     .attr ('fill', colors[op])
     .attr('opacity', op/n)
     // .attr ('stroke', '#888')
-    .attr ('stroke-width', '3px');
+    .attr ('stroke-width', '3px')
+    .on('mouseover', function (d, i) {
+          d3.select(this).transition()
+               .duration('50')
+               .attr('opacity', '.85');
+    })
+    .on('mouseout', function (d, i) {
+          d3.select(this).transition()
+               .duration('50')
+               .attr('opacity', '1')
+    });    
     points = points.map(d => [d.x, d.y]);
     var convexHull = (points.length < 3) ? points : d3.polygonHull(points);
     convexHullPath.attr ('d', smoothHull(convexHull));
@@ -168,9 +178,23 @@ var points = d3.range(30).map(function(d) {
     }
 });
 
-
+// l =[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23],[23,24],[24,25],[25,26],[26,27],[27,28],[28,29],[29,0]]
+// d=[]
+// for (var i = 0; i < l.length; i++) {
+//         p ={
+//             x: points[l[i][0]],
+//             y: points[l[i][1]],
+//             id: i,
+//             r: pointRadius
+//         }
+//         d.push(p)
+    
+        
+//     }
+//     render(d,i);
+    
 for (var i = 0; i < n; i++) {
-    var point = d3.range(30).map(function(d) {
+    var point = d3.range(i*10).map(function(d) {
         return {
             x: pointGenX(),
             y: pointGenY(),
