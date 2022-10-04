@@ -137,12 +137,12 @@ function formatter(key){
         data: convexHull(expanded[key].data),
         color: Highcharts.color(Highcharts.getOptions()
             .colors[key]).setOpacity(0.5).get(),
-        // enableMouseTracking: false,
-        // allowPointSelect:true,
-        // accessibility: {
-        //     exposeAsGroupOnly: false,
-        //     description: 'Material'
-        // }
+        enableMouseTracking: false,
+        allowPointSelect:true,
+        accessibility: {
+            exposeAsGroupOnly: false,
+            description: 'Material'
+        }
 }
 return s;
 }
