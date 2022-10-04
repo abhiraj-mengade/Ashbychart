@@ -1,2 +1,2 @@
 # Ashbychart
-Implementing Ashby charts in Echarts &amp; React
+Implementing Ashby charts in Highchart.Js

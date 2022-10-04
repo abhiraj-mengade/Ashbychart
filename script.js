@@ -9,7 +9,7 @@ for(var i = 0; i <100; i++) {
 function getn(n) {
     return Math.random() * n;
   }
-var n =10;
+var n =10
 alld=[]
 djs=[]
 for(var i =8; i>=0;i--)
@@ -125,7 +125,6 @@ for(var i =0; i<datajs.length;i++)
 {
     dfs(datajs[i]);
 }
-
 
 
 function formatter(key){
