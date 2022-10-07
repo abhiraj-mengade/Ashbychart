@@ -10,5 +10,6 @@ Implementing Ashby charts in Highchart.Js
 
 ### Usage as a Library- 
 - To import and use this as a library, simply import the ashby.js file, it contains all functions.
+<br>
 Doc Link: https://docs.google.com/document/d/1CAJH9NWZAC2goQGTwULM6Nc4bDnjJxgNXhQ9lVKRZC0/edit#heading=h.5vljv2wyg7np
 The project is statically hosted on: https://abhiraj-mengade.github.io/Ashbychart/
