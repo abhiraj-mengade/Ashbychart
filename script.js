@@ -19,71 +19,103 @@ for(var i =8; i>=0;i--)
 
 }
 
-var datajs =[{
-    'id': '1',
-    name: 'Material 1',
-    'data': djs[0],
-    'hasdepth':false
-},
-{   'id': '2',
-    name: 'Material 2',
-    'data': [
-        {
-            'id': '3',
-            'name': 'Material 2.1',
-            'data': djs[1],
-            'hasdepth':false
-        },
-        {   'id': '4',
-            'name': 'Material 2.2',
-            'data': djs[2],
-            'hasdepth':false
-        }
+var datajs
+async function getdatajs(){
+    const response = await fetch('URL');
+    datajs = await response.json();
+}
+// getdata(); //Call the function when you want to get the data from a URL
 
-    ],
-    'hasdepth':true
-},
-{   'id': '5',
-    name: 'Material 3',
-    'data': djs[3],
-    'hasdepth':false
-},
-{   'id': '6',
-    name: 'Material 4',
-    'data': [
-        {
-            'id': '7',
-            'name': 'Material 4.1',
-            'data': djs[4],
-            'hasdepth':false
-        },
-        {   'id': '8',
-            'name': 'Material 4.2',
-            'data': [
-                {
-                    'id': '9',
-                    'name': 'Material 4.2.1',
-                    'data': djs[5],
-                    'hasdepth':false
-                },
-                {   'id': '10',
-                    'name': 'Material 4.2.2',
-                    'data': djs[6],
-                    'hasdepth':false
-                },
-                {   'id': '11',
-                    'name': 'Material 4.2.3',
-                    'data': djs[7],
-                    'hasdepth':false
-                },
 
-            ],
-            'hasdepth':true
-        },
-    ],
-    'hasdepth':true
-},
+datajs = [
+    {
+        "id": 1,
+        "name": "Material 1",
+        "data": djs[
+            0
+        ],
+        "hasdepth": false
+    },
+    {
+        "id": 2,
+        "name": "Material 2",
+        "data": [
+            {
+                "id": 3,
+                "name": "Material 2.1",
+                "data": djs[
+                    1
+                ],
+                "hasdepth": false
+            },
+            {
+                "id": 4,
+                "name": "Material 2.2",
+                "data": djs[
+                    2
+                ],
+                "hasdepth": false
+            }
+        ],
+        "hasdepth": true
+    },
+    {
+        "id": 5,
+        "name": "Material 3",
+        "data": djs[
+            3
+        ],
+        "hasdepth": false
+    },
+    {
+        "id": 6,
+        "name": "Material 4",
+        "data": [
+            {
+                "id": 7,
+                "name": "Material 4.1",
+                "data": djs[
+                    4
+                ],
+                "hasdepth": false
+            },
+            {
+                "id": 8,
+                "name": "Material 4.2",
+                "data": [
+                    {
+                        "id": 9,
+                        "name": "Material 4.2.1",
+                        "data": djs[
+                            5
+                        ],
+                        "hasdepth": false
+                    },
+                    {
+                        "id": 10,
+                        "name": "Material 4.2.2",
+                        "data": djs[
+                            6
+                        ],
+                        "hasdepth": false
+                    },
+                    {
+                        "id": 11,
+                        "name": "Material 4.2.3",
+                        "data": djs[
+                            7
+                        ],
+                        "hasdepth": false
+                    }
+                ],
+                "hasdepth": true
+            }
+        ],
+        "hasdepth": true
+    }
 ]
+
+
 
 
 
@@ -142,7 +174,9 @@ function formatter(key){
         accessibility: {
             exposeAsGroupOnly: false,
             description: 'Material'
-        }
+        },
+        borderColor : "#000000",
+
 }
 return s;
 }
@@ -211,7 +245,8 @@ for(var i =0;i<datajs.length;i++){
 // }
 // ]
 
-// datajs = {
+// datajs = 
+// {
 //     1: {
 //         "name": "M1",
 //         "data":[[1,2],[0,1]],

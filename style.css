@@ -1,4 +1,17 @@
 .highchart{
     width: 65%;
-    margin: auto;
+    margin: 4%;
+    margin-left: 25%;
+    
+}
+.container{
+    border: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 100px;
+
+}
+
+body{
+
 }

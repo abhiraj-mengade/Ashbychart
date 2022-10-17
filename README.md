@@ -1,2 +1,17 @@
 # Ashbychart
-Implementing Ashby charts in Highchart.Js
+Implementing Interactive Ashby charts in Highchart.Js
+
+## Introduction
+An Ashby plot, named for Michael Ashby of Cambridge University, is a scatter plot which displays two or more properties of many materials or classes of materials. These plots are useful to compare the ratio between different properties. For the example of the stiff/light part discussed above would have Young's modulus on one axis and density on the other axis, with one data point on the graph for each candidate material. 
+
+## Documentation
+The repository contains the following files:
+* `index.html` - The main file which contains the code for the interactive Ashby chart.
+* `ashby.js` - The javascript file which contains the code for the interactive Ashby chart.
+* `ashby.css` - The css file which contains the code for the interactive Ashby chart.
+* `ashby.json` - The json file which contains the format of data for the interactive Ashby chart.
+* `README.md` - The file which contains the documentation for the interactive Ashby chart.
+
+### About the files
+'Ashby.js' can be used independently as a separate javascript file. It can be imported along in othe projects as well. 
+It has all the functions needed to create an interactive Ashby chart. It takes input as a JSON data of the following format.

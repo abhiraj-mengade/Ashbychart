@@ -108,6 +108,10 @@ function convexHull(p_list) {
     } while (new_end != hull[0]);
     hull.push(hull[0]);
     // hull = catmullrom(hull);
+    // hull = bezier(hull);
+    // hull = bspline(hull);  
+    hull = midpointcurve(hull); 
+
 
     return hull ;
 }
@@ -151,3 +155,138 @@ function catmullrom(ddata){
 
 
     }
+
+
+function bezier(ddata){
+    if(ddata.length<3){
+        return ddata
+    }
+    var data =[];
+    for(var i=0;i<ddata.length-2;i++){
+        let p1 = ddata[i]
+        let p2 = ddata[(i+1)%ddata.length]
+        let p3 = ddata[(i+2)%ddata.length]
+        let p4 = ddata[(i+3)%ddata.length]
+        let p5 = ddata[(i+4)%ddata.length]
+
+
+        let d1 = Math.sqrt((p2[0]-p1[0])**2+(p2[1]-p1[1])**2)
+        let d2 = Math.sqrt((p3[0]-p2[0])**2+(p3[1]-p2[1])**2)
+        let d3 = Math.sqrt((p4[0]-p3[0])**2+(p4[1]-p3[1])**2)
+
+        let v1 = [p2[0]-p1[0],p2[1]-p1[1]]
+        let v2 = [p3[0]-p2[0],p3[1]-p2[1]]
+        let v3 = [p4[0]-p3[0],p4[1]-p3[1]]
+
+        let v1n = [v1[0]/d1,v1[1]/d1]
+        let v2n = [v2[0]/d2,v2[1]/d2]
+        let v3n = [v3[0]/d3,v3[1]/d3]
+
+        let v1n2 = [v1n[0]+v2n[0],v1n[1]+v2n[1]]
+        let v2n2 = [v2n[0]+v3n[0],v2n[1]+v3n[1]]
+        
+        for(var j=0;j<100;j++){
+            let t = j/100
+            let x = (1-t)**3*p2[0]+3*(1-t)**2*t*p3[0]+3*(1-t)*t**2*p4[0]+t**3*p5[0]
+            let y = (1-t)**3*p2[1]+3*(1-t)**2*t*p3[1]+3*(1-t)*t**2*p4[1]+t**3*p5[1]
+            data.push([x,y])
+        }
+       
+}
+    return data;
+}
+
+function midpointcurve(ddata){
+    if(ddata.length<3){
+        return ddata
+    }
+
+    var data =[];
+    for(var i=0;i<ddata.length;i++){
+        for(var j=0;j<100;j++){
+            let t = j/100
+            let p1 = ddata[i]
+            let p2 = ddata[(i+1)%ddata.length]
+            let p3 = ddata[(i+2)%ddata.length]
+            let p4 = ddata[(i+3)%ddata.length]
+
+            let x = (1-t)*p1[0]+t*p2[0]
+            let y = (1-t)*p1[1]+t*p2[1]
+            data.push([x,y])
+
+            let x2 = (1-t)*p2[0]+t*p3[0]
+            let y2 = (1-t)*p2[1]+t*p3[1]
+            data.push([x2,y2])
+
+
+
+            // let x3 = (1-t)*p3[0]+t*p4[0]
+            // let y3 = (1-t)*p3[1]+t*p4[1]
+            // data.push([x3,y3])
+        }
+    }
+
+    return data;
+
+}
+function bspline(ddata){
+    if(ddata.length<3){
+        return ddata
+    }
+
+    var data =[];
+    n= 5
+    k=4
+
+    //control points
+
+    var cpoints = []
+    for(var i=0;i<ddata.length;i++){
+        cpoints.push(ddata[i])
+    }
+
+    //knot vector
+    var knot = []
+    for(var i=0;i<n+k+1;i++){
+        if(i<k){
+            knot.push(0)
+        }
+        else if(i>=k && i<n){
+            knot.push(i-k+1)
+        }
+        else{
+            knot.push(n-k+2)
+        }
+    }
+
+    const N = (i,k,t) => {
+        if(k==1){
+            if(t>=knot[i] && t<knot[i+1]){
+                return 1
+            }
+            else{
+                return 0
+            }
+        }
+        else{
+            let a = (t-knot[i])/(knot[i+k-1]-knot[i])
+            let b = (knot[i+k]-t)/(knot[i+k]-knot[i+1])
+            return a*N(i,k-1,t)+b*N(i+1,k-1,t)
+        }
+    }
+
+
+    for(var i=0;i<n;i++){
+        for(var j=0;j<100;j++){
+            let t = j/100
+            let x = 0
+            let y = 0
+            for(var l=0;l<k;l++){
+                x += cpoints[i+l][0]*N(i,l,t,knot)
+                y += cpoints[i+l][1]*N(i,l,t,knot)
+            }
+            data.push([x,y])
+        }
+    }
+    return data;
+}
