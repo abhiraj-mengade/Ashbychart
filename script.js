@@ -9,12 +9,19 @@ for(var i = 0; i <100; i++) {
 function getn(n) {
     return Math.random() * n;
   }
-var n =10
+var n =20
 alld=[]
 djs=[]
 for(var i =8; i>=0;i--)
 {
-    var data = new Array((i+1)*20).fill().map((_) => {return [getn((i+2)*40),getn((i+2)*20*(i+1))]});
+    //data with mean u and standard deviation s
+    var u = i*30;
+    var s = getn(100)/5;
+    var data = [];
+    for(var j =0; j<n;j++){
+        data.push([u*(j+1*25)+getn(s)*10,u+getn(s)*(10)]);
+    }
+    // var data = new Array((i+1)*20).fill().map((_) => {return [getn((i+2)*40),getn((i+2)*20*(i+1))]});
     djs.push(data);
 
 }
@@ -24,13 +31,13 @@ async function getdatajs(){
     const response = await fetch('URL');
     datajs = await response.json();
 }
-// getdata(); //Call the function when you want to get the data from a URL
+// getdatajs(); //Call the function when you want to get the data from a URL
 
 
 datajs = [
     {
         "id": 1,
-        "name": "Material 1",
+        "name": "Polymers",
         "data": djs[
             0
         ],
@@ -38,11 +45,11 @@ datajs = [
     },
     {
         "id": 2,
-        "name": "Material 2",
+        "name": "Elastomers",
         "data": [
             {
                 "id": 3,
-                "name": "Material 2.1",
+                "name": "Elastomer Fibers",
                 "data": djs[
                     1
                 ],
@@ -50,7 +57,7 @@ datajs = [
             },
             {
                 "id": 4,
-                "name": "Material 2.2",
+                "name": "Elastomer Films",
                 "data": djs[
                     2
                 ],
@@ -61,7 +68,7 @@ datajs = [
     },
     {
         "id": 5,
-        "name": "Material 3",
+        "name": "Metal Composites",
         "data": djs[
             3
         ],
@@ -69,11 +76,11 @@ datajs = [
     },
     {
         "id": 6,
-        "name": "Material 4",
+        "name": "Ferrous Metals",
         "data": [
             {
                 "id": 7,
-                "name": "Material 4.1",
+                "name": "Ferrous Metal Alloys",
                 "data": djs[
                     4
                 ],
@@ -81,11 +88,11 @@ datajs = [
             },
             {
                 "id": 8,
-                "name": "Material 4.2",
+                "name": "Ferric Oxides",
                 "data": [
                     {
                         "id": 9,
-                        "name": "Material 4.2.1",
+                        "name": "Ferric Oxide Nanoparticles",
                         "data": djs[
                             5
                         ],
@@ -93,7 +100,7 @@ datajs = [
                     },
                     {
                         "id": 10,
-                        "name": "Material 4.2.2",
+                        "name": "Ferric Oxide Nanowires",
                         "data": djs[
                             6
                         ],
@@ -101,7 +108,7 @@ datajs = [
                     },
                     {
                         "id": 11,
-                        "name": "Material 4.2.3",
+                        "name": "Ferric Oxide Nanorods",
                         "data": djs[
                             7
                         ],
@@ -116,7 +123,9 @@ datajs = [
 ]
 
 
-
+/**
+ * Following down from here contains the data manapilation and the chart functions. A dfs is run over the data and child and parent trees are formed
+ */
 
 
 var expanded={}; 
@@ -214,6 +223,7 @@ function displaydata(key){
 function getdata(){
     return alld;
 }
+
 childrentree[0]=[];
 for(var i =0;i<datajs.length;i++){
     alld.push(formatter(datajs[i].id));

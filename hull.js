@@ -108,9 +108,11 @@ function convexHull(p_list) {
     } while (new_end != hull[0]);
     hull.push(hull[0]);
     // hull = catmullrom(hull);
-    // hull = bezier(hull);
     // hull = bspline(hull);  
+    // hull = bezier(hull);
     hull = midpointcurve(hull); 
+    
+
 
 
     return hull ;
